@@ -139,7 +139,7 @@ php artisan migrate
 
 ---
 
-##  STEP 5: Model (FULL)
+##  STEP 5: Model 
 
 ### app/Models/Post.php
 
@@ -158,7 +158,7 @@ class Post extends Model
 
 ---
 
-##  STEP 6: Controller (FULL)
+##  STEP 6: Controller 
 
 ### app/Http/Controllers/PostController.php
 
