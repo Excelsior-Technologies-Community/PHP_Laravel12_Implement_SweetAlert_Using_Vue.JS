@@ -227,7 +227,7 @@ class PostController extends Controller
 
 ---
 
-##  STEP 7: Routes (FULL)
+##  STEP 7: Routes 
 
 ### routes/web.php
 
@@ -265,7 +265,7 @@ Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.
 
 ---
 
-##  STEP 9: app.js (FULL)
+##  STEP 9: app.js 
 
 ### resources/js/app.js
 
@@ -304,7 +304,7 @@ createInertiaApp({
 
 ---
 
-##  STEP 10: app.blade.php (FULL)
+##  STEP 10: app.blade.php
 
 ### resources/views/app.blade.php
 
