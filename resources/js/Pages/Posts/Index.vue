@@ -1,83 +1,195 @@
 <script setup>
-// Import Inertia helpers
-import { Link, router } from '@inertiajs/vue3'
+import { router, Link } from '@inertiajs/vue3'
 
-// Import SweetAlert delete confirmation helper
-import { confirmDelete } from '@/plugins/sweetalert'
+import {
+    confirmDelete,
+    loadingAlert,
+    closeAlert,
+    toastAlert
+} from '@/plugins/sweetalert'
 
-// Receive posts from controller as props
 defineProps({
     posts: Array
 })
 
 /**
- * Delete post after SweetAlert confirmation
+ * Delete post
  */
 const deletePost = async (id) => {
+
     const result = await confirmDelete()
 
-    // If user confirms deletion
-    if (result.isConfirmed) {
-        router.delete(`/posts/${id}`)
-        // Success SweetAlert will be shown via
-        // controller flash + app.js global SweetAlert
+    if (!result.isConfirmed) {
+        return
     }
+
+    loadingAlert('Deleting post...')
+
+    router.delete(`/posts/${id}`, {
+
+        preserveScroll: true,
+
+        onError: () => {
+            closeAlert()
+
+            toastAlert(
+                'Unable to delete the post',
+                'error'
+            )
+        },
+
+        onFinish: () => {
+            closeAlert()
+        }
+    })
 }
 </script>
 
 <template>
-    <div class="p-6">
-        <h1 class="text-2xl mb-4">Posts</h1>
+    <div class="min-h-screen bg-gray-100 py-10">
 
-        <!-- Navigate to create page -->
-        <Link
-            href="/posts/create"
-            class="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-            Add Post
-        </Link>
+        <div class="mx-auto max-w-6xl px-4">
 
-        <!-- Posts table -->
-        <table class="w-full mt-4 border">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">Title</th>
-                    <th class="border p-2">Description</th>
-                    <th class="border p-2">Action</th>
-                </tr>
-            </thead>
+            <!-- Header -->
+            <div
+                class="mb-6 flex items-center justify-between"
+            >
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">
+                        Posts
+                    </h1>
 
-            <tbody>
-                <!-- Loop through posts -->
-                <tr v-for="post in posts" :key="post.id">
-                    <td class="border p-2">{{ post.title }}</td>
-                    <td class="border p-2">{{ post.description }}</td>
-                    <td class="border p-2">
-                        <!-- Edit link -->
-                        <Link
-                            :href="`/posts/${post.id}/edit`"
-                            class="text-blue-600 mr-2"
-                        >
-                            Edit
-                        </Link>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Manage your posts using SweetAlert2.
+                    </p>
+                </div>
 
-                        <!-- Delete button -->
-                        <button
-                            @click="deletePost(post.id)"
-                            class="text-red-600"
-                        >
-                            Delete
-                        </button>
-                    </td>
-                </tr>
+                <Link
+                    href="/posts/create"
+                    class="rounded bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700"
+                >
+                    + Add Post
+                </Link>
+            </div>
 
-                <!-- Empty state -->
-                <tr v-if="posts.length === 0">
-                    <td colspan="3" class="text-center p-4">
-                        No posts found
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <!-- Posts table -->
+            <div
+                class="overflow-hidden rounded-lg bg-white shadow"
+            >
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full">
+
+                        <thead>
+                            <tr
+                                class="border-b bg-gray-50 text-left"
+                            >
+                                <th class="p-4 font-semibold text-gray-700">
+                                    #
+                                </th>
+
+                                <th class="p-4 font-semibold text-gray-700">
+                                    Title
+                                </th>
+
+                                <th class="p-4 font-semibold text-gray-700">
+                                    Description
+                                </th>
+
+                                <th class="p-4 text-center font-semibold text-gray-700">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr
+                                v-for="(post, index) in posts"
+                                :key="post.id"
+                                class="border-b transition hover:bg-gray-50"
+                            >
+
+                                <td class="p-4 text-gray-500">
+                                    {{ index + 1 }}
+                                </td>
+
+                                <td class="p-4 font-medium text-gray-800">
+                                    {{ post.title }}
+                                </td>
+
+                                <td class="max-w-md p-4 text-gray-600">
+                                    {{ post.description }}
+                                </td>
+
+                                <td class="p-4">
+                                    <div
+                                        class="flex justify-center gap-3"
+                                    >
+
+                                        <Link
+                                            :href="`/posts/${post.id}/edit`"
+                                            class="rounded bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 transition hover:bg-blue-200"
+                                        >
+                                            Edit
+                                        </Link>
+
+                                        <button
+                                            type="button"
+                                            @click="deletePost(post.id)"
+                                            class="rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-700 transition hover:bg-red-200"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                            <!-- Empty state -->
+                            <tr v-if="posts.length === 0">
+
+                                <td
+                                    colspan="4"
+                                    class="p-10 text-center"
+                                >
+                                    <div
+                                        class="text-gray-500"
+                                    >
+                                        <div class="mb-2 text-4xl">
+                                            📝
+                                        </div>
+
+                                        <p class="font-medium">
+                                            No posts found
+                                        </p>
+
+                                        <p class="mt-1 text-sm">
+                                            Create your first post to get started.
+                                        </p>
+
+                                        <Link
+                                            href="/posts/create"
+                                            class="mt-4 inline-block rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                                        >
+                                            Create Post
+                                        </Link>
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 </template>
