@@ -2,11 +2,24 @@ import '../css/app.css'
 import './bootstrap'
 
 import Swal from 'sweetalert2'
-import { createInertiaApp } from '@inertiajs/vue3'
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
-import { createApp, h } from 'vue'
+
+import {
+    createInertiaApp,
+    router
+} from '@inertiajs/vue3'
+
+import {
+    resolvePageComponent
+} from 'laravel-vite-plugin/inertia-helpers'
+
+import {
+    createApp,
+    h
+} from 'vue'
+
 
 createInertiaApp({
+
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
@@ -14,25 +27,91 @@ createInertiaApp({
         ),
 
     setup({ el, App, props, plugin }) {
-        const vueApp = createApp({ render: () => h(App, props) })
 
-        // GLOBAL SWEETALERT FOR FLASH MESSAGE
-        vueApp.mixin({
-            mounted() {
-                const flash = this.$page.props.flash
-
-                if (flash?.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: flash.success,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    })
-                }
-            }
+        const vueApp = createApp({
+            render: () => h(App, props)
         })
 
-        vueApp.use(plugin).mount(el)
+        vueApp
+            .use(plugin)
+            .mount(el)
+
+        /*
+        |--------------------------------------------------------------------------
+        | Global Inertia Flash Notifications
+        |--------------------------------------------------------------------------
+        */
+
+        router.on('success', (event) => {
+
+            const flash = event.detail.page.props.flash
+
+            /*
+            |--------------------------------------------------------------------------
+            | Success Toast
+            |--------------------------------------------------------------------------
+            */
+
+            if (flash?.success) {
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+
+                    icon: 'success',
+
+                    title: flash.success,
+
+                    showConfirmButton: false,
+
+                    timer: 2500,
+
+                    timerProgressBar: true,
+
+                    showCloseButton: true,
+
+                    didOpen: (toast) => {
+
+                        toast.addEventListener(
+                            'mouseenter',
+                            Swal.stopTimer
+                        )
+
+                        toast.addEventListener(
+                            'mouseleave',
+                            Swal.resumeTimer
+                        )
+
+                    }
+                })
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Error Toast
+            |--------------------------------------------------------------------------
+            */
+
+            if (flash?.error) {
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+
+                    icon: 'error',
+
+                    title: flash.error,
+
+                    showConfirmButton: false,
+
+                    timer: 3000,
+
+                    timerProgressBar: true,
+
+                    showCloseButton: true,
+                })
+            }
+
+        })
     },
 })
