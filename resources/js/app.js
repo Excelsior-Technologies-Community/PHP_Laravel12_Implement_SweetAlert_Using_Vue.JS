@@ -20,21 +20,37 @@ import {
 
 createInertiaApp({
 
-    resolve: (name) =>
-        resolvePageComponent(
+    resolve: (name) => {
+
+        return resolvePageComponent(
             `./Pages/${name}.vue`,
             import.meta.glob('./Pages/**/*.vue')
-        ),
+        )
 
-    setup({ el, App, props, plugin }) {
+    },
+
+
+    setup({
+        el,
+        App,
+        props,
+        plugin
+    }) {
 
         const vueApp = createApp({
-            render: () => h(App, props)
+
+            render: () => h(
+                App,
+                props
+            )
+
         })
+
 
         vueApp
             .use(plugin)
             .mount(el)
+
 
         /*
         |--------------------------------------------------------------------------
@@ -42,76 +58,92 @@ createInertiaApp({
         |--------------------------------------------------------------------------
         */
 
-        router.on('success', (event) => {
+        router.on(
+            'success',
+            (event) => {
 
-            const flash = event.detail.page.props.flash
+                const flash =
+                    event.detail.page.props.flash
 
-            /*
-            |--------------------------------------------------------------------------
-            | Success Toast
-            |--------------------------------------------------------------------------
-            */
 
-            if (flash?.success) {
+                /*
+                |--------------------------------------------------------------------------
+                | Success
+                |--------------------------------------------------------------------------
+                */
 
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
+                if (flash?.success) {
 
-                    icon: 'success',
+                    Swal.fire({
 
-                    title: flash.success,
+                        toast: true,
 
-                    showConfirmButton: false,
+                        position: 'top-end',
 
-                    timer: 2500,
+                        icon: 'success',
 
-                    timerProgressBar: true,
+                        title: flash.success,
 
-                    showCloseButton: true,
+                        showConfirmButton: false,
 
-                    didOpen: (toast) => {
+                        timer: 2500,
 
-                        toast.addEventListener(
-                            'mouseenter',
-                            Swal.stopTimer
-                        )
+                        timerProgressBar: true,
 
-                        toast.addEventListener(
-                            'mouseleave',
-                            Swal.resumeTimer
-                        )
+                        showCloseButton: true,
 
-                    }
-                })
+                        didOpen: (toast) => {
+
+                            toast.addEventListener(
+                                'mouseenter',
+                                Swal.stopTimer
+                            )
+
+                            toast.addEventListener(
+                                'mouseleave',
+                                Swal.resumeTimer
+                            )
+
+                        }
+
+                    })
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Error
+                |--------------------------------------------------------------------------
+                */
+
+                if (flash?.error) {
+
+                    Swal.fire({
+
+                        toast: true,
+
+                        position: 'top-end',
+
+                        icon: 'error',
+
+                        title: flash.error,
+
+                        showConfirmButton: false,
+
+                        timer: 3000,
+
+                        timerProgressBar: true,
+
+                        showCloseButton: true,
+
+                    })
+
+                }
+
             }
+        )
 
-            /*
-            |--------------------------------------------------------------------------
-            | Error Toast
-            |--------------------------------------------------------------------------
-            */
-
-            if (flash?.error) {
-
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-
-                    icon: 'error',
-
-                    title: flash.error,
-
-                    showConfirmButton: false,
-
-                    timer: 3000,
-
-                    timerProgressBar: true,
-
-                    showCloseButton: true,
-                })
-            }
-
-        })
     },
+
 })
