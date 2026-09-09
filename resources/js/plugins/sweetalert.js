@@ -7,11 +7,17 @@ import Swal from 'sweetalert2'
 export const successAlert = (message) => {
 
     return Swal.fire({
+
         icon: 'success',
+
         title: 'Success',
+
         text: message,
+
         timer: 2000,
+
         showConfirmButton: false,
+
     })
 
 }
@@ -23,9 +29,13 @@ export const successAlert = (message) => {
 export const errorAlert = (message) => {
 
     return Swal.fire({
+
         icon: 'error',
+
         title: 'Error',
+
         text: message,
+
     })
 
 }
@@ -40,7 +50,7 @@ export const confirmDelete = () => {
 
         title: 'Are you sure?',
 
-        text: 'This record will be permanently deleted!',
+        text: 'This post will be moved to trash.',
 
         icon: 'warning',
 
@@ -48,7 +58,69 @@ export const confirmDelete = () => {
 
         confirmButtonColor: '#d33',
 
-        confirmButtonText: 'Yes, delete it',
+        cancelButtonColor: '#6b7280',
+
+        confirmButtonText: 'Yes, move to trash',
+
+        cancelButtonText: 'Cancel',
+
+        reverseButtons: true,
+
+    })
+
+}
+
+
+/**
+ * Restore confirmation
+ */
+export const confirmRestore = () => {
+
+    return Swal.fire({
+
+        title: 'Restore post?',
+
+        text: 'This post will be restored from trash.',
+
+        icon: 'question',
+
+        showCancelButton: true,
+
+        confirmButtonColor: '#16a34a',
+
+        cancelButtonColor: '#6b7280',
+
+        confirmButtonText: 'Yes, restore',
+
+        cancelButtonText: 'Cancel',
+
+        reverseButtons: true,
+
+    })
+
+}
+
+
+/**
+ * Bulk delete confirmation
+ */
+export const confirmBulkDelete = (count) => {
+
+    return Swal.fire({
+
+        title: 'Delete selected posts?',
+
+        text: `${count} post(s) will be moved to trash.`,
+
+        icon: 'warning',
+
+        showCancelButton: true,
+
+        confirmButtonColor: '#d33',
+
+        cancelButtonColor: '#6b7280',
+
+        confirmButtonText: 'Yes, delete them',
 
         cancelButtonText: 'Cancel',
 
@@ -90,14 +162,11 @@ export const loadingAlert = (
 
 
 /**
- * Close only loading alert
+ * Close loading alert
  */
 export const closeAlert = () => {
 
-    if (
-        Swal.isVisible() &&
-        Swal.isLoading()
-    ) {
+    if (Swal.isVisible()) {
 
         Swal.close()
 
