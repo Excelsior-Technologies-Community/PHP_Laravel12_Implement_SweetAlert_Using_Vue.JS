@@ -2,6 +2,7 @@ import '../css/app.css'
 import './bootstrap'
 
 import Swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.min.css'
 
 import {
     createInertiaApp,
@@ -11,6 +12,8 @@ import {
 import {
     resolvePageComponent
 } from 'laravel-vite-plugin/inertia-helpers'
+
+import { ZiggyVue } from '../../vendor/tightenco/ziggy'
 
 import {
     createApp,
@@ -49,6 +52,7 @@ createInertiaApp({
 
         vueApp
             .use(plugin)
+            .use(ZiggyVue)
             .mount(el)
 
 
