@@ -2,6 +2,35 @@
 
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/dashboard', function () {
+
+    $totalPosts = \App\Models\Post::withTrashed()->count();
+
+    $activePosts = \App\Models\Post::count();
+
+    $deletedPosts = \App\Models\Post::onlyTrashed()->count();
+
+    $recentPosts = \App\Models\Post::orderByDesc('created_at')->limit(5)->get(['id', 'title', 'created_at']);
+
+    return Inertia::render('Dashboard', [
+        'stats' => [
+            'total'  => $totalPosts,
+            'active' => $activePosts,
+            'trash'  => $deletedPosts,
+            'recent' => $recentPosts,
+        ],
+    ]);
+
+})->middleware('auth')->name('dashboard');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -85,3 +114,6 @@ Route::get('/posts-export', [
     PostController::class,
     'export'
 ])->name('posts.export');
+
+
+require __DIR__ . '/auth.php';

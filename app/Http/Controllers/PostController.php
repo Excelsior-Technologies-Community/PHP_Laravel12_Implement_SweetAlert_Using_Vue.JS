@@ -246,11 +246,13 @@ class PostController extends Controller
             ],
         ]);
 
-        Post::whereIn('id', $validated['ids'])->delete();
+        $posts = Post::whereIn('id', $validated['ids'])->get();
+
+        $posts->each->delete();
 
         return back()->with(
             'success',
-            count($validated['ids']) . ' post(s) moved to trash.'
+            $posts->count() . ' post(s) moved to trash.'
         );
     }
 

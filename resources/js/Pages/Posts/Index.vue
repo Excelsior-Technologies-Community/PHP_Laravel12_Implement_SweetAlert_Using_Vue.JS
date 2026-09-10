@@ -1,6 +1,6 @@
 <script setup>
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
 
 import { router, Link } from '@inertiajs/vue3'
 
@@ -165,7 +165,7 @@ const togglePost = (id) => {
 
 const toggleAll = () => {
 
-    if (checkAll.value) {
+    if (!allCurrentPageSelected.value) {
 
         const currentIds =
             props.posts.data.map(post => post.id)
@@ -249,6 +249,31 @@ watch(search, () => {
 
     }, 400)
 
+})
+
+
+/*
+|--------------------------------------------------------------------------
+| Reset select-all when page data changes
+|--------------------------------------------------------------------------
+*/
+
+watch(
+    () => props.posts.data,
+    () => {
+        checkAll.value = allCurrentPageSelected.value
+    }
+)
+
+
+/*
+|--------------------------------------------------------------------------
+| Cleanup
+|--------------------------------------------------------------------------
+*/
+
+onBeforeUnmount(() => {
+    clearTimeout(searchTimer)
 })
 
 
@@ -790,7 +815,7 @@ const sortIcon = (column) => {
 
                                     <input
                                         type="checkbox"
-                                        v-model="checkAll"
+                                        :checked="allCurrentPageSelected"
                                         @change="toggleAll"
                                         :disabled="posts.data.length === 0"
                                         class="h-4 w-4 rounded border-gray-300 text-blue-600"
