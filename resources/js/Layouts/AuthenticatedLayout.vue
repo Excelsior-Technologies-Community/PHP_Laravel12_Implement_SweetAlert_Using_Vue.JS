@@ -24,7 +24,7 @@ const page = usePage()
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex shrink-0 items-center">
-                                <Link :href="route('dashboard')">
+                                <Link href="/dashboard">
                                     <ApplicationLogo
                                         class="block h-9 w-auto fill-current text-gray-800"
                                     />
@@ -36,25 +36,25 @@ const page = usePage()
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <!-- Dashboard -->
-                                <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                <Link
+                                    href="/dashboard"
+                                    :active="page.url === '/dashboard'"
                                 >
                                     Dashboard
-                                </NavLink>
+                                </Link>
 
                                 <!-- Posts -->
-                                <NavLink
-                                    :href="route('posts.index')"
-                                    :active="route().current('posts.*')"
+                                <Link
+                                    href="/posts"
+                                    :active="page.url.startsWith('/posts')"
                                 >
                                     Posts
-                                </NavLink>
+                                </Link>
                             </div>
                         </div>
 
                         <!-- Right Side -->
-                        <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                        <div v-if="page.props.auth.user" class="hidden sm:ms-6 sm:flex sm:items-center">
                             <div class="relative ms-3">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
@@ -83,13 +83,13 @@ const page = usePage()
 
                                     <template #content>
                                         <DropdownLink
-                                            :href="route('profile.edit')"
+                                            href="/user/profile"
                                         >
                                             Profile
                                         </DropdownLink>
 
                                         <DropdownLink
-                                            :href="route('logout')"
+                                            href="/logout"
                                             method="post"
                                             as="button"
                                         >
@@ -157,23 +157,23 @@ const page = usePage()
                     <div class="space-y-1 pb-3 pt-2">
                         <!-- Dashboard -->
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            href="/dashboard"
+                            :active="page.url === '/dashboard'"
                         >
                             Dashboard
                         </ResponsiveNavLink>
 
                         <!-- Posts -->
                         <ResponsiveNavLink
-                            :href="route('posts.index')"
-                            :active="route().current('posts.*')"
+                            href="/posts"
+                            :active="page.url.startsWith('/posts')"
                         >
                             Posts
                         </ResponsiveNavLink>
                     </div>
 
                     <!-- Mobile User Information -->
-                    <div class="border-t border-gray-200 pb-1 pt-4">
+                    <div v-if="page.props.auth.user" class="border-t border-gray-200 pb-1 pt-4">
                         <div class="px-4">
                             <div
                                 class="text-base font-medium text-gray-800"
@@ -190,13 +190,13 @@ const page = usePage()
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink
-                                :href="route('profile.edit')"
+                                href="/user/profile"
                             >
                                 Profile
                             </ResponsiveNavLink>
 
                             <ResponsiveNavLink
-                                :href="route('logout')"
+                                href="/logout"
                                 method="post"
                                 as="button"
                             >
